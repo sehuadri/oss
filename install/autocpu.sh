@@ -6,7 +6,7 @@ WH='\033[1;37m'
 ipsaya=$(wget -qO- ifconfig.me)
 data_server=$(curl -v --insecure --silent https://google.com/ 2>&1 | grep Date | sed -e 's/< Date: //')
 date_list=$(date +"%Y-%m-%d" -d "$data_server")
-data_ip="https://raw.githubusercontent.com/myridwan/izinvps/ipuk/ipx"
+data_ip="https://raw.githubusercontent.com/awanklod/izin_new/main/ip"
 checking_sc() {
     useexp=$(curl -sS "$data_ip" | grep "$ipsaya" | awk '{print $3}')
     date_list=$(date +%Y-%m-%d)
@@ -42,8 +42,8 @@ checking_sc() {
         echo -e "   \033[0;33mYour VPS\033[0m $ipsaya \033[0;33mHas been Banned\033[0m"
         echo -e "     \033[0;33mBuy access permissions for scripts\033[0m"
         echo -e "             \033[0;33mContact Admin :\033[0m"
-        echo -e "      \033[2;32mWhatsApp\033[0m wa.me/6287769315399"
-        echo -e "      \033[2;32mTelegram\033[0m t.me/kytxz"
+        echo -e "      \033[2;32mWhatsApp\033[0m wa.me/none"
+        echo -e "      \033[2;32mTelegram\033[0m t.me/amiqyu"
         echo -e "\033[1;93m────────────────────────────────────────────\033[0m"
 
         for service in nginx kyt xray ws haproxy; do
