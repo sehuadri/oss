@@ -1,10 +1,9 @@
 <p align="center">
   <img src="https://readme-typing-svg.demolab.com?font=Capriola&size=40&duration=4000&pause=450&color=F70069&background=FFFFAA00&center=true&random=false&width=600&height=100&lines=PIAN VPN AUTOSCRIPT !;Explore the world of features!" /></p>
 
-![IMAGE](https://raw.githubusercontent.com/pianstore/os/refs/heads/main/pian.jpg)
 
 ### INSTALL SCRIPT 
-<pre><code>apt install screen -y;wget https://raw.githubusercontent.com/pianstore/os/main/setup.sh && chmod +x setup.sh && screen -S xwan ./setup.sh
+<pre><code>apt install screen -y;wget https://raw.githubusercontent.com/sehuadri/oss/main/setup.sh && chmod +x setup.sh && screen -S xwan ./setup.sh
 </code></pre>
 
 ### TESTED ON OS 
