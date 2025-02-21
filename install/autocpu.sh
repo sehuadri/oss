@@ -80,7 +80,7 @@ checking_sc() {
 checking_sc
 cd
 today=$(date -d "0 days" +"%Y-%m-%d")
-Exp2=$(curl -sS https://raw.githubusercontent.com/myridwan/izinvps/ipuk/ipx | grep $ipsaya | awk '{print $3}')
+Exp2=$(curl -sS https://raw.githubusercontent.com/awanklod/izin_new/main/ip | grep $ipsaya | awk '{print $3}')
 d1=$(date -d "$Exp2" +%s)
 d2=$(date -d "$today" +%s)
 certificate=$(( (d1 - d2) / 86400 ))
