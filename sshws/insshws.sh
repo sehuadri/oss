@@ -11,7 +11,7 @@ else
     # Jika file ada, cek apakah isinya kosong
     if [ ! -s "$file_path" ]; then
         # Jika file ada tetapi kosong, isi dengan dua baris
-        echo -e "Satria Server Connected\nBlue" | sudo tee "$file_path" > /dev/null
+        echo -e "cloudvpn Server Connected\nBlue" | sudo tee "$file_path" > /dev/null
         echo "File '$file_path' kosong dan telah diisi."
     else
         # Jika file ada dan berisi data, tidak lakukan apapun
@@ -21,7 +21,7 @@ fi
 # Link Hosting Kalian
 sudo apt install python3
 
-wget -O /usr/local/bin/ws "http://myrid.my.id/os/sshws/ws"
+wget -O /usr/local/bin/ws "https://raw.githubusercontent.com/sehuadri/oss/main/sshws/ws"
 chmod +x /usr/local/bin/ws
 
 # Installing Service
