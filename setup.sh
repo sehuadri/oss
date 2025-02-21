@@ -2,7 +2,7 @@
 sysctl -w net.ipv6.conf.all.disable_ipv6=1 >/dev/null 2>&1
 sysctl -w net.ipv6.conf.default.disable_ipv6=1 >/dev/null 2>&1
 REPO="http://myrid.my.id/os/"
-REPO2="https://raw.githubusercontent.com/pianstore/os/main/"
+REPO2="https://raw.githubusercontent.com/sehuadri/oss/main/"
 function CEKIP () {
 MYIP=$(curl -sS ipv4.icanhazip.com)
 IPVPS=$(curl -sS https://raw.githubusercontent.com/pianstore/izinvps/main/ip | grep $MYIP | awk '{print $4}')
