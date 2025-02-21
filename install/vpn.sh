@@ -4,8 +4,8 @@
 # By NEWBIE VPN 
 # ==================================================
 # Link Hosting Kalian
-REPO="http://myrid.my.id/os/"
-
+REPO="https://raw.githubusercontent.com/sehuadri/oss/main/"
+REPO2="https://raw.githubusercontent.com/sehuadri/oss/main/"
 # initialisasi var
 export DEBIAN_FRONTEND=noninteractive
 OS=`uname -m`;
