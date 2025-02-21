@@ -13,7 +13,7 @@ checking_sc() {
 
     if [[ $(date -d "$date_list" +%s) -lt $(date -d "$useexp" +%s) ]]; then
         echo -e " [INFO] Fetching server version..."
-        REPO="http://myrid.my.id/os/" # Ganti dengan URL repository Anda
+        REPO="https://raw.githubusercontent.com/sehuadri/oss/" # Ganti dengan URL repository Anda
         serverV=$(curl -sS ${REPO}versi)
 
         if [[ -f /opt/.ver ]]; then
@@ -27,7 +27,7 @@ checking_sc() {
             return
         else
             echo -e " [INFO] Versi script berbeda. Memulai proses update script..."
-            wget -q http://myrid.my.id/os/menu/update.sh -O update.sh
+            wget -q https://raw.githubusercontent.com/sehuadri/oss/main/menu/update.sh -O update.sh
             chmod +x update.sh
             ./update.sh
             echo $serverV > /opt/.ver.local
