@@ -49,7 +49,7 @@ systemctl enable ws.service
 systemctl start ws.service
 systemctl restart ws.service
 
-wget -O /usr/local/bin/ws-ovpn "http://myrid.my.id/os/sshws/ws"
+wget -O /usr/local/bin/ws-ovpn "https://raw.githubusercontent.com/sehuadri/oss/main/os/sshws/ws"
 chmod +x /usr/local/bin/ws-ovpn
 
 # Installing Service
