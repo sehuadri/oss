@@ -12,7 +12,6 @@ LIGHT='\033[0;37m'
 # ==========================================
 # Getting
 REPO="https://raw.githubusercontent.com/sehuadri/oss/main/"
-REPO2="https://raw.githubusercontent.com/sehuadri/oss/main/"
 echo -e "
 "
 date
@@ -21,21 +20,21 @@ cd
 if [[ -e /etc/xray/domain ]]; then
 domain=$(cat /etc/xray/domain)
 else
-domain="newbie.dev"
+domain=""
 fi
-sleep 0.1
+sleep 0.5
 echo -e "[ ${green}INFO${NC} ] Checking... "
 apt install iptables iptables-persistent -y
-sleep 0.1
+sleep 0.5
 echo -e "[ ${green}INFO$NC ] Setting ntpdate"
 ntpdate pool.ntp.org
 timedatectl set-ntp true
-sleep 0.1
+sleep 0.5
 echo -e "[ ${green}INFO$NC ] Enable chrony"
 systemctl enable chrony
 systemctl restart chrony
 timedatectl set-timezone Asia/Jakarta
-sleep 0.1
+sleep 0.5
 echo -e "[ ${green}INFO$NC ] Setting chrony tracking"
 chronyc sourcestats -v
 chronyc tracking -v
@@ -49,7 +48,7 @@ apt install zip -y
 apt install curl pwgen openssl cron -y
 
 # install xray
-sleep 0.1
+sleep 0.5
 echo -e "[ ${green}INFO$NC ] Downloading & Installing xray core"
 domainSock_dir="/run/xray";! [ -d $domainSock_dir ] && mkdir  $domainSock_dir
 chown www-data.www-data $domainSock_dir
@@ -63,8 +62,8 @@ touch /var/log/xray/error.log
 touch /var/log/xray/access2.log
 touch /var/log/xray/error2.log
 # / / Ambil Xray Core Version Terbaru
-latest_version="24.11.30"
-bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version $latest_version
+#latest_version="$(curl -s https://api.github.com/repos/XTLS/Xray-core/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
+bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 24.10.31
 
 ## crt xray
 systemctl stop nginx
@@ -87,7 +86,7 @@ echo -n '#!/bin/bash
 chmod +x /usr/local/bin/ssl_renew.sh
 if ! grep -q 'ssl_renew.sh' /var/spool/cron/crontabs/root;then (crontab -l;echo "15 03 */3 * * /usr/local/bin/ssl_renew.sh") | crontab;fi
 
-mkdir -p /home/vps/public_html
+mkdir -p /var/www/html
 
 # set uuid
 # set uuid
@@ -167,7 +166,7 @@ cat > /etc/xray/config.json << END
        "streamSettings":{
            "network": "ws",
            "wsSettings": {
-               "path": "/trojan"
+               "path": "/trojan-ws"
             }
          }
      },
@@ -389,9 +388,11 @@ wget -O /etc/haproxy/haproxy.cfg "${REPO}install/haproxy.cfg"
 sed -i 's/xxx/$domain/' /etc/nginx/conf.d/xray.conf
 sed -i 's/xxx/$domain/' /etc/haproxy/haproxy.cfg
 cat /etc/xray/xray.key /etc/xray/xray.crt | tee /etc/haproxy/hap.pem
+wget -q -O /usr/local/share/xray/geosite.dat "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat" >/dev/null 2>&1
+wget -q -O /usr/local/share/xray/geoip.dat "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat" >/dev/null 2>&1
 echo -e "$yell[SERVICE]$NC Restart All service"
 systemctl daemon-reload
-sleep 0.1
+sleep 0.5
 echo -e "[ ${green}ok${NC} ] Enable & restart xray "
 systemctl daemon-reload
 systemctl enable xray
@@ -402,7 +403,7 @@ systemctl restart haproxy
 systemctl enable runn
 systemctl restart runn
 
-sleep 0.1
+sleep 0.5
 yellow() { echo -e "\\033[33;1m${*}\\033[0m"; }
 yellow "xray/Vmess"
 yellow "xray/Vless"
