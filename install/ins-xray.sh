@@ -90,6 +90,7 @@ if ! grep -q 'ssl_renew.sh' /var/spool/cron/crontabs/root;then (crontab -l;echo 
 mkdir -p /home/vps/public_html
 
 # set uuid
+# set uuid
 uuid=$(cat /proc/sys/kernel/random/uuid)
 # xray config
 cat > /etc/xray/config.json << END
@@ -97,12 +98,12 @@ cat > /etc/xray/config.json << END
   "log" : {
     "access": "/var/log/xray/access.log",
     "error": "/var/log/xray/error.log",
-    "loglevel": "info"
+    "loglevel": "warning"
   },
   "inbounds": [
       {
       "listen": "127.0.0.1",
-      "port": 10085,
+      "port": 10000,
       "protocol": "dokodemo-door",
       "settings": {
         "address": "127.0.0.1"
@@ -111,13 +112,13 @@ cat > /etc/xray/config.json << END
     },
    {
      "listen": "127.0.0.1",
-     "port": "14016",
+     "port": "10001",
      "protocol": "vless",
       "settings": {
           "decryption":"none",
             "clients": [
                {
-                 "id": "${uuid}"
+                 "id": "${uuid}"                 
 #vless
              }
           ]
@@ -129,9 +130,9 @@ cat > /etc/xray/config.json << END
           }
         }
      },
-    {
+     {
      "listen": "127.0.0.1",
-     "port": "23456",
+     "port": "10002",
      "protocol": "vmess",
       "settings": {
             "clients": [
@@ -150,52 +151,11 @@ cat > /etc/xray/config.json << END
         }
      },
     {
-     "listen": "127.0.0.1",
-     "port": "28406",
-     "protocol": "vmess",
-      "settings": {
-            "clients": [
-               {
-                 "id": "${uuid}",
-                 "alterId": 0
-#vmess
-             }
-          ]
-       },
-       "streamSettings":{
-         "network": "ws",
-            "wsSettings": {
-                "path": "/worryfree"
-          }
-        }
-     },
-    {
       "listen": "127.0.0.1",
-      "port": "25431",
+      "port": "10003",
       "protocol": "trojan",
       "settings": {
-          "decryption":"none",
-           "clients": [
-              {
-                 "password": "${uuid}"
-#trojanntls
-              }
-          ],
-         "udp": true
-       },
-       "streamSettings":{
-           "network": "ws",
-           "wsSettings": {
-               "path": "/trojan-ntls"
-            }
-         }
-     },
-    {
-      "listen": "127.0.0.1",
-      "port": "25432",
-      "protocol": "trojan",
-      "settings": {
-          "decryption":"none",
+          "decryption":"none",		
            "clients": [
               {
                  "password": "${uuid}"
@@ -207,13 +167,13 @@ cat > /etc/xray/config.json << END
        "streamSettings":{
            "network": "ws",
            "wsSettings": {
-               "path": "/trojan-ws"
+               "path": "/trojan"
             }
          }
      },
     {
-        "listen": "127.0.0.1",
-        "port": "30300",
+         "listen": "127.0.0.1",
+        "port": "10004",
         "protocol": "shadowsocks",
         "settings": {
            "clients": [
@@ -231,10 +191,10 @@ cat > /etc/xray/config.json << END
                "path": "/ss-ws"
            }
         }
-     },
+     },	
       {
         "listen": "127.0.0.1",
-     "port": "24456",
+     "port": "10005",
         "protocol": "vless",
         "settings": {
          "decryption":"none",
@@ -254,7 +214,7 @@ cat > /etc/xray/config.json << END
      },
      {
       "listen": "127.0.0.1",
-     "port": "31234",
+     "port": "10006",
      "protocol": "vmess",
       "settings": {
             "clients": [
@@ -274,7 +234,7 @@ cat > /etc/xray/config.json << END
      },
      {
         "listen": "127.0.0.1",
-     "port": "33456",
+     "port": "10007",
         "protocol": "trojan",
         "settings": {
           "decryption":"none",
@@ -294,7 +254,7 @@ cat > /etc/xray/config.json << END
    },
    {
     "listen": "127.0.0.1",
-    "port": "30310",
+    "port": "10008",
     "protocol": "shadowsocks",
     "settings": {
         "clients": [
@@ -312,7 +272,7 @@ cat > /etc/xray/config.json << END
            "serviceName": "ss-grpc"
           }
        }
-    }
+    }	
   ],
   "outbounds": [
     {
