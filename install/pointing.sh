@@ -1,79 +1,121 @@
 #!/bin/bash
+
+# Install jq dan curl jika belum ada
 apt install jq curl -y
-if [[ ! -e /etc/github/cf ]]; then
-mkdir -p /etc/github
-curl -s http://myrid.my.id/cf > /etc/github/cf
-fi
-DO=$(cat /etc/xray/domain | cut -d "." -f2-)
-SUB=$(cat /etc/xray/domain | cut -d "." -f1)
 
-# Memeriksa apakah DO kosong, jika kosong maka isi dengan 'palon.store'
-if [[ -z "$DO" ]]; then
-    DO="xwan.me"
-fi
+# Buat direktori untuk domain jika belum ada
+prepare_directories() {
+  rm -rf /root/xray/scdomain
+  mkdir -p /root/xray
+  clear
+}
 
-# Memeriksa apakah SUB kosong, jika kosong maka isi dengan 4 karakter acak alfanumerik
-if [[ -z "$SUB" ]]; then
-    SUB=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 4)
-fi
+# Generate subdomain random
+generate_random_subdomains() {
+  sub=$(</dev/urandom tr -dc a-z0-9 | head -c5)
+  subsl=$(</dev/urandom tr -dc a-z0-9 | head -c5)
+  DOMAIN="xwan.me"
+  SUB_DOMAIN="${sub}.${DOMAIN}"
+  NS_DOMAIN="${subsl}.ns.${DOMAIN}"
+}
 
-IP=$(curl -sS ipv4.icanhazip.com)
-SUB_DOMAIN=${SUB}.${DO}
-NS_DOMAIN=*.${SUB_DOMAIN}
-echo "$SUB_DOMAIN" > /etc/xray/domain
-echo "$SUB_DOMAIN" > /root/domain
-CF_KEY=$(cat /etc/github/cf)
-set -euo pipefail
-echo "Pointing Domain for $SUB_DOMAIN..."
-ZONE=$(
-		curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DO}&status=active" \
-		-H "Authorization: Bearer ${CF_KEY}" \
-		-H "Content-Type: application/json" | jq -r .result[0].id
-	)
+# Ambil IP publik
+get_public_ip() {
+  IP=$(curl -sS ifconfig.me)
+}
 
-	RECORD=$(
-		curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?name=${SUB_DOMAIN}" \
-		-H "Authorization: Bearer ${CF_KEY}" \
-		-H "Content-Type: application/json" | jq -r .result[0].id
-	)
+# Dapatkan zone ID dari Cloudflare
+get_cloudflare_zone_id() {
+  ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMAIN}&status=active" \
+    -H "X-Auth-Email: ${CF_ID}" \
+    -H "X-Auth-Key: ${CF_KEY}" \
+    -H "Content-Type: application/json" | jq -r .result[0].id)
 
-		RECORD1=$(
-		curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?name=${NS_DOMAIN}" \
-		-H "Authorization: Bearer ${CF_KEY}" \
-		-H "Content-Type: application/json" | jq -r .result[0].id
-	)
+  if [[ -z "$ZONE" ]]; then
+    echo "Failed to retrieve Cloudflare zone ID. Exiting..."
+    exit 1
+  fi
+}
 
-	if [[ "${#RECORD}" -le 10 ]]; then
-		RECORD=$(
-			curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
-			-H "Authorization: Bearer ${CF_KEY}" \
-			-H "Content-Type: application/json" \
-			--data '{"type":"A","name":"'${SUB_DOMAIN}'","content":"'${IP}'","proxied":false}' | jq -r .result.id
-		)
-	else
-		RESULT=$(
-		curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
-		-H "Authorization: Bearer ${CF_KEY}" \
-		-H "Content-Type: application/json" \
-		--data '{"type":"A","name":"'${SUB_DOMAIN}'","content":"'${IP}'","proxied":false}'
-	)
-	fi
-		
-	if [[ "${#RECORD1}" -le 10 ]]; then
-		RECORD2=$(
-			curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
-			-H "Authorization: Bearer ${CF_KEY}" \
-			-H "Content-Type: application/json" \
-			--data '{"type":"A","name":"'${NS_DOMAIN}'","content":"'${IP}'","proxied":true}' | jq -r .result.id
-		)
-	else
+# Fungsi untuk membuat atau mengupdate DNS record
+update_or_create_record() {
+  local record_type=$1
+  local name=$2
+  local content=$3
 
-	RESULT2=$(
-		curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD1}" \
-		-H "Authorization: Bearer ${CF_KEY}" \
-		-H "Content-Type: application/json" \
-		--data '{"type":"A","name":"'${NS_DOMAIN}'","content":"'${IP}'","proxied":true}'
-	)	
-	fi
-sleep 1
-clear
+  # Cek apakah record DNS sudah ada
+  RECORD=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?name=${name}" \
+    -H "X-Auth-Email: ${CF_ID}" \
+    -H "X-Auth-Key: ${CF_KEY}" \
+    -H "Content-Type: application/json" | jq -r .result[0].id)
+
+  # Jika tidak ada, buat DNS record baru
+  if [[ "${#RECORD}" -le 10 ]]; then
+    echo "DNS record for ${name} not found, creating..."
+    RECORD=$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
+      -H "X-Auth-Email: ${CF_ID}" \
+      -H "X-Auth-Key: ${CF_KEY}" \
+      -H "Content-Type: application/json" \
+      --data '{"type":"'${record_type}'","name":"'${name}'","content":"'${content}'","ttl":120,"proxied":false}' | jq -r .result.id)
+
+    if [[ -z "$RECORD" ]]; then
+      echo "Failed to create DNS record for ${name}. Exiting..."
+      exit 1
+    fi
+  else
+    # Update DNS record jika sudah ada
+    echo "Updating existing DNS record for ${name}..."
+    RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
+      -H "X-Auth-Email: ${CF_ID}" \
+      -H "X-Auth-Key: ${CF_KEY}" \
+      -H "Content-Type: application/json" \
+      --data '{"type":"'${record_type}'","name":"'${name}'","content":"'${content}'","ttl":120,"proxied":false}')
+  fi
+}
+
+# Output informasi
+display_info() {
+  echo "Host : $SUB_DOMAIN"
+  echo "Host NS : $NS_DOMAIN"
+}
+
+# Simpan ke file konfigurasi dan direktori yang tepat
+save_configuration() {
+  sudo echo "IP=$SUB_DOMAIN" > /var/lib/ipvps.conf
+  sudo echo "$SUB_DOMAIN" > /root/domain
+  sudo echo "$NS_DOMAIN" > /root/dns
+  sudo echo "$SUB_DOMAIN" > /etc/xray/domain
+  sudo echo "$NS_DOMAIN" > /etc/xray/dns
+}
+
+# Fungsi utama
+main() {
+  CF_ID="Ridwanstoreaws@gmail.com"
+  CF_KEY="4ecfe9035f4e6e60829e519bd5ee17d66954f"
+
+  prepare_directories
+  generate_random_subdomains
+  get_public_ip
+  get_cloudflare_zone_id
+
+  # Update atau buat A record untuk SUB_DOMAIN
+  update_or_create_record "A" "${SUB_DOMAIN}" "${IP}"
+
+  # Update atau buat NS record untuk NS_DOMAIN
+  update_or_create_record "NS" "${NS_DOMAIN}" "${SUB_DOMAIN}"
+
+  # Output informasi dan simpan konfigurasi
+  display_info
+  save_configuration
+
+  echo -e "Done Record Domain = $SUB_DOMAIN"
+  echo -e "Done Record NSDomain = $NS_DOMAIN"
+
+  # Tunggu beberapa saat sebelum mengakhiri skrip, agar DNS sempat update
+  sleep 3
+
+  echo "Process completed successfully."
+}
+
+# Eksekusi fungsi utama
+main
