@@ -58,7 +58,7 @@ echo -e "$green                ____ ____ _  _$NC"
 echo -e "$green                [__  [__  |__|$NC"
 echo -e "$green                ___] ___] |  |$NC"
 echo -e "$green                $NC"                                                                                                                          
-echo -e "$green😈 TERIMAKSIH TELAH MEMAKAI SCRIPT PIANSTORE 😈$NC"
+echo -e "$green♥ TERIMAKSIH TELAH MEMAKAI SCRIPT PIANSTORE ♥$NC"
 sleep 2
 sleep 5
 echo -e  "${green}┌──────────────────────────────────────────┐${NC}"
@@ -68,7 +68,7 @@ echo " "
 until [[ $name =~ ^[a-zA-Z0-9_.-]+$ ]]; do
 read -rp "Masukan Nama Kamu Disini tanpa spasi : " -e name
 done
-echo "CLOUDVPN PREMIUM" > /etc/xray/username
+echo "CLOUDVPN STORE" > /etc/xray/username
 echo ""
 clear
 author=$name
@@ -79,7 +79,7 @@ function key2(){
     [[ ! -f /usr/bin/git ]] && apt install git -y &> /dev/null
     clear
     echo -e "${green}┌──────────────────────────────────────────┐${NC}"
-    echo -e "${green}│ \033[1;37mIZIN SSHWS              ${green}│${NC}"
+    echo -e "${green}│ \033[1;37mIZIN LISENSI              ${green}│${NC}"
     echo -e "${green}└──────────────────────────────────────────┘${NC}"
         MYIP=$(curl -sS ipv4.icanhazip.com)
         if [[ ! -d /etc/github ]]; then
@@ -197,8 +197,8 @@ fi
 if [[ $domain == "2" ]]; then
 clear
 echo -e  "${green}┌──────────────────────────────────────────┐${NC}"
-echo -e  "${green}│  \033[1;37mContoh subdomain ( pian )                    ${green}│${NC}"
-echo -e  "${green}│    \033[1;37mxxx.pianstore.my.id jadi subdomain kamu               ${green}│${NC}"
+echo -e  "${green}│  \033[1;37mContoh subdomain ( myrid )                    ${green}│${NC}"
+echo -e  "${green}│    \033[1;37mxxx.xwan.me jadi subdomain kamu               ${green}│${NC}"
 echo -e  "${green}└──────────────────────────────────────────┘${NC}"
 echo " "
 until [[ $dn1 =~ ^[a-zA-Z0-9_.-]+$ ]]; do
@@ -423,8 +423,8 @@ res9
 function iinfo(){
 domain=$(cat /etc/xray/domain)
 TIMES="10"
-CHATID="6631695782"
-KEY="7830319313:AAEq-OTFRD3qYCTxqCr9TU2fVA3vFO6gHYE"
+CHATID="1210833546"
+KEY="6006599143:AAEgstCAioq35JgX97HaW_G3TAkLKzLZS_w"
 URL="https://api.telegram.org/bot$KEY/sendMessage"
 ISP=$(cat /etc/xray/isp)
 CITY=$(cat /etc/xray/city)
@@ -452,7 +452,7 @@ TEXT="
 <code>EXP SCRIPT : </code><code>$EXP Days</code>
 <code>━━━━━━━━━━━━━━━━━━━━</code>
 <i> Notifikasi Installer Script...</i>
-"'&reply_markup={"inline_keyboard":[[{"text":"🔥ᴏʀᴅᴇʀ","url":"https://t.me/pianstore01"},{"text":"🔥GRUP","url":"https://t.me/pianstore01"}]]}'
+"'&reply_markup={"inline_keyboard":[[{"text":"🔥ᴏʀᴅᴇʀ","url":"https://t.me/kytxz"},{"text":"🔥GRUP","url":"https://t.me/kytxz"}]]}'
 curl -s --max-time $TIMES -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
 clear
 }
@@ -553,7 +553,7 @@ echo  ""
 cd
 iinfo
 echo -e "${green}┌────────────────────────────────────────────┐${NC}"
-echo -e "${green}│  INSTAL SCRIPT PIAN SELESAI..               │${NC}"
+echo -e "${green}│  INSTALL SCRIPT SELESAI..                  │${NC}"
 echo -e "${green}└────────────────────────────────────────────┘${NC}"
 echo  ""
 sleep 4
