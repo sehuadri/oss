@@ -298,7 +298,7 @@ clear
 }
 
 res4() {
-wget ${REPO}sshws/insshws.sh && chmod +x insshws.sh && ./insshws.sh
+wget ${REPO}sshws/websocketku.sh && chmod +x websocketku.sh && ./websocketku.sh
 clear
 }
 
@@ -541,7 +541,7 @@ rm /root/setup.sh >/dev/null 2>&1
 rm /root/pointing.sh >/dev/null 2>&1
 rm /root/ssh-vpn.sh >/dev/null 2>&1
 rm /root/ins-xray.sh >/dev/null 2>&1
-rm /root/insshws.sh >/dev/null 2>&1
+rm /root/websocketku.sh >/dev/null 2>&1
 rm /root/set-br.sh >/dev/null 2>&1
 rm /root/ohp.sh >/dev/null 2>&1
 rm /root/update.sh >/dev/null 2>&1
