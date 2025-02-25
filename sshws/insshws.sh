@@ -49,14 +49,11 @@ systemctl enable ws.service
 systemctl start ws.service
 systemctl restart ws.service
 
-wget -O /usr/local/bin/ws-ovpn "https://raw.githubusercontent.com/sehuadri/oss/main/os/sshws/ws.py"
-chmod +x /usr/local/bin/ws-ovpn
-
 # Installing Service
 cat > /etc/systemd/system/ws-ovpn.service << END
 [Unit]
-Description=Proxy Mod By NEWBIE STORE
-Documentation=https://t.me/newbie_store24
+Description=OpenVPN
+Documentation=https://google.com
 After=network.target nss-lookup.target
 
 [Service]
@@ -65,7 +62,7 @@ User=root
 CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
 AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
 NoNewPrivileges=true
-ExecStart=/usr/local/bin/ws-ovpn 2086
+ExecStart=/usr/bin/python3 -O /etc/websocket/ws.py 10012
 Restart=on-failure
 
 [Install]
@@ -74,4 +71,5 @@ END
 
 systemctl daemon-reload
 systemctl enable ws-ovpn
+systemctl start ws-ovpn
 systemctl restart ws-ovpn
