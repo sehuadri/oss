@@ -1,34 +1,23 @@
 #!/bin/bash
-# Proxy For Edukasi & Imclass
-file_path="/etc/handeling"
 
-# Cek apakah file ada
-if [ ! -f "$file_path" ]; then
-    # Jika file tidak ada, buat file dan isi dengan dua baris
-    echo -e "cloudvpn premium server\nBLUE" | sudo tee "$file_path" > /dev/null
-    echo "File '$file_path' berhasil dibuat."
-else
-    # Jika file ada, cek apakah isinya kosong
-    if [ ! -s "$file_path" ]; then
-        # Jika file ada tetapi kosong, isi dengan dua baris
-        echo -e "cloudvpn premium server\nBlue" | sudo tee "$file_path" > /dev/null
-        echo "File '$file_path' kosong dan telah diisi."
-    else
-        # Jika file ada dan berisi data, tidak lakukan apapun
-        echo "File '$file_path' sudah ada dan berisi data."
-    fi
-fi
+apt update
+apt install python3 -y
+apt install python3-pip -y
+apt install python3-requests -y
+
+mkdir -p /etc/websocket
+
 # Link Hosting Kalian
-sudo apt install python3
+repo="https://raw.githubusercontent.com/sehuadri/oss/main"
 
-wget -O /usr/local/bin/ws "https://raw.githubusercontent.com/sehuadri/oss/main/sshws/ws.py"
-chmod +x /usr/local/bin/ws
+wget -q -O /etc/websocket/ws.py "${repo}/sshws/ws.py"
+chmod +x /etc/websocket/ws.py
 
 # Installing Service
 cat > /etc/systemd/system/ws.service << END
 [Unit]
-Description=Proxy Mod By Newbie Store 
-Documentation=https://t.me/newbie_store24
+Description=Websocket
+Documentation=https://google.com
 After=network.target nss-lookup.target
 
 [Service]
@@ -37,7 +26,7 @@ User=root
 CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
 AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
 NoNewPrivileges=true
-ExecStart=/usr/local/bin/ws
+ExecStart=/usr/bin/python3 -O /etc/websocket/ws.py 10015
 Restart=on-failure
 
 [Install]
